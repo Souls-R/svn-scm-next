@@ -1,5 +1,5 @@
 import * as path from "path";
-import { runTests } from "vscode-test";
+import { runTests } from "@vscode/test-electron";
 
 async function main() {
   const extensionDevelopmentPath = path.resolve(__dirname, "../../");
@@ -12,7 +12,8 @@ async function main() {
       extensionTestsPath
     });
   } catch (err) {
-    console.error(`Failed to run tests: ${err}\n${err.stack}`);
+    const error = err as Error;
+    console.error(`Failed to run tests: ${error}\n${error.stack}`);
     process.exit(1);
   }
 }

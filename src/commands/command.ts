@@ -409,7 +409,7 @@ export abstract class Command implements Disposable {
       if (await exists(tempFile)) {
         try {
           await unlink(tempFile);
-        } catch (err) {
+        } catch {
           // TODO(cjohnston)//log error
         }
       }

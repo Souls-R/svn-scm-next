@@ -2,8 +2,5 @@
 {
   "prettier.semi": true,
   "prettier.singleQuote": false,
-  "prettier.trailingComma": "none",
-  "chat.tools.terminal.autoApprove": {
-    "npm install": true
-  }
+  "prettier.trailingComma": "none"
 }

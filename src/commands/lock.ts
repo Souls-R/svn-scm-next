@@ -1,4 +1,4 @@
-import { Uri, window } from "vscode";
+import { window } from "vscode";
 import { Command } from "./command";
 
 export class Lock extends Command {

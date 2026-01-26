@@ -785,6 +785,10 @@ export class Repository implements IRemoteRepository {
     return this.run(Operation.Add, () => this.repository.addFiles(files));
   }
 
+  public async lock(files: string[], message?: string) {
+    return this.run(Operation.Lock, () => this.repository.lock(files, message));
+  }
+
   public async addChangelist(files: string[], changelist: string) {
     return this.run(Operation.AddChangelist, () =>
       this.repository.addChangelist(files, changelist)

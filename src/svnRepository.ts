@@ -966,4 +966,10 @@ export class Repository {
 
     return result.stdout;
   }
+
+  public async lock(files: string[], message: string = "Locking for changes") {
+    files = files.map(file => this.removeAbsolutePath(file));
+    const args = ["lock", "-m", message, ...files];
+    return this.exec(args);
+  }
 }

@@ -45,6 +45,7 @@ You can checkout a SVN repository with the `SVN: Checkout` command in the **Comm
 * Add files
 * Revert edits
 * Remove files
+* Lock files
 * Create branches
 * Switch branches
 * Create patches

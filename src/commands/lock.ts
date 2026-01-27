@@ -30,7 +30,7 @@ export class Lock extends Command {
 
       try {
         await repository.lock([path]);
-        window.showInformationMessage(`Successfully locked ${resource.fsPath}`);
+        window.showInformationMessage(`Successfully locked ${path}`);
       } catch (error) {
         console.log(error);
         window.showErrorMessage("Unable to lock file");

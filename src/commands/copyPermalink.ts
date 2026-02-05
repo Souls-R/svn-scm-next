@@ -1,4 +1,4 @@
-import { commands, env, window } from "vscode";
+import { commands, env, Uri, window } from "vscode";
 import { SourceControlManager } from "../source_control_manager";
 import { Command } from "./command";
 
@@ -7,14 +7,32 @@ export class CopyPermalink extends Command {
     super("svn.copyPermalink");
   }
 
-  public async execute(): Promise<void> {
-    const editor = window.activeTextEditor;
-    if (!editor) {
-      window.showErrorMessage("No active editor");
+  public async execute(resourceUri?: Uri): Promise<void> {
+    // If a URI is passed directly (e.g., from editor context menu), use it
+    let fileUri: Uri | undefined = resourceUri;
+
+    // Otherwise, try to get file URI from active text editor
+    if (!fileUri) {
+      fileUri = window.activeTextEditor?.document.uri;
+    }
+
+    // If still no URI, try to get from active tab
+    // This handles binary files or files with unsupported encoding
+    if (!fileUri) {
+      const activeTab = window.tabGroups.activeTabGroup?.activeTab;
+      if (activeTab?.input) {
+        const input = activeTab.input as any;
+        if (input.uri) {
+          fileUri = input.uri;
+        }
+      }
+    }
+
+    if (!fileUri) {
+      window.showErrorMessage("No active file");
       return;
     }
 
-    const fileUri = editor.document.uri;
     if (fileUri.scheme !== "file") {
       window.showErrorMessage("File is not a local file");
       return;

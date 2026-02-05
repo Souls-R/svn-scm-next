@@ -121,20 +121,15 @@ suite("Copy Permalink Tests", () => {
   test("Copy Permalink - Modified File", async function() {
     this.timeout(10000);
 
+    // Save original content
+    const originalContent = fs.readFileSync(testFilePath, "utf8");
+
     // Open and modify the test file
     const document = await workspace.openTextDocument(testFilePath);
     await window.showTextDocument(document);
 
     // Modify the file
     fs.appendFileSync(testFilePath, "\nmodified content");
-
-    // Reload the document to reflect changes
-    await commands.executeCommand("workbench.action.files.revert");
-    await timeout(500);
-    
-    fs.appendFileSync(testFilePath, "\nmodified content");
-    const modifiedDoc = await workspace.openTextDocument(testFilePath);
-    await window.showTextDocument(modifiedDoc);
     await timeout(500);
 
     // Execute the copy permalink command
@@ -153,9 +148,8 @@ suite("Copy Permalink Tests", () => {
       console.log(`✓ Permalink for modified file: ${copiedText}`);
     }
 
-    // Revert the changes
-    fs.writeFileSync(testFilePath, "test content for permalink");
-    await commands.executeCommand("svn.revert", Uri.file(testFilePath));
+    // Restore original content (without using svn revert which shows a dialog)
+    fs.writeFileSync(testFilePath, originalContent);
   });
 
   test("Copy Permalink - Verify URL Structure", async function() {
@@ -168,8 +162,19 @@ suite("Copy Permalink Tests", () => {
     // Get repository info to verify URL structure
     const repository = sourceControlManager.getRepository(
       checkoutDir
-    ) as Repository;
-    const info = await repository.getInfo(testFilePath);
+    );
+    
+    if (!repository) {
+      // Try to reopen the repository if it was closed
+      await sourceControlManager.tryOpenRepository(checkoutDir.fsPath);
+      const repo2 = sourceControlManager.getRepository(checkoutDir);
+      assert.ok(repo2, "Repository should exist");
+    }
+    
+    const repo = sourceControlManager.getRepository(checkoutDir) as Repository;
+    assert.ok(repo, "Repository should be available");
+    
+    const info = await repo.getInfo(testFilePath);
 
     // Execute the copy permalink command
     await commands.executeCommand("svn.copyPermalink");

@@ -221,7 +221,7 @@ export function overrideNextShowQuickPick(value: any) {
 
 const originalShowQuickPick = window.showQuickPick;
 
-(window.showQuickPick as any) = (
+window.showQuickPick = (
   items: any[] | Thenable<any[]>,
   ...args: any[]
 ): Thenable<any | undefined> => {

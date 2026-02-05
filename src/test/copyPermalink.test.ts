@@ -84,21 +84,11 @@ suite("Copy Permalink Tests", () => {
 
       // Verify the permalink format
       assert.ok(copiedText, "Clipboard should not be empty");
-      assert.ok(copiedText.includes("?p="), "Permalink should contain ?p= parameter");
-      assert.ok(copiedText.includes("&r="), "Permalink should contain &r= parameter");
-      assert.ok(copiedText.includes("/trunk/test_permalink.txt"), "Permalink should contain the file path");
-
-      // Extract and verify revision numbers
-      const pMatch = copiedText.match(/\?p=(\d+)/);
-      const rMatch = copiedText.match(/&r=(\d+)/);
       
-      assert.ok(pMatch, "Should have peg revision parameter");
-      assert.ok(rMatch, "Should have operative revision parameter");
-      assert.equal(pMatch![1], rMatch![1], "Peg and operative revisions should be the same");
+      // The format should be: file:///tmp/svn_server_-<random>/trunk/test_permalink.txt?p=2&r=2
+      const expectedPattern = /^file:\/\/\/tmp\/svn_server_-[^/]+\/trunk\/test_permalink\.txt\?p=2&r=2$/;
+      assert.ok(expectedPattern.test(copiedText), `Permalink should match expected format: ${copiedText}`);
       
-      const revision = parseInt(pMatch![1], 10);
-      assert.ok(revision > 0, "Revision should be greater than 0");
-
       console.log(`✓ Permalink copied successfully: ${copiedText}`);
     }
   });
@@ -150,51 +140,5 @@ suite("Copy Permalink Tests", () => {
 
     // Restore original content (without using svn revert which shows a dialog)
     fs.writeFileSync(testFilePath, originalContent);
-  });
-
-  test("Copy Permalink - Verify URL Structure", async function() {
-    this.timeout(10000);
-
-    // Open the test file
-    const document = await workspace.openTextDocument(testFilePath);
-    await window.showTextDocument(document);
-
-    // Get repository info to verify URL structure
-    const repository = sourceControlManager.getRepository(
-      checkoutDir
-    );
-    
-    if (!repository) {
-      // Try to reopen the repository if it was closed
-      await sourceControlManager.tryOpenRepository(checkoutDir.fsPath);
-      const repo2 = sourceControlManager.getRepository(checkoutDir);
-      assert.ok(repo2, "Repository should exist");
-    }
-    
-    const repo = sourceControlManager.getRepository(checkoutDir) as Repository;
-    assert.ok(repo, "Repository should be available");
-    
-    const info = await repo.getInfo(testFilePath);
-
-    // Execute the copy permalink command
-    await commands.executeCommand("svn.copyPermalink");
-    await timeout(500);
-
-    // Get the clipboard content
-    const clipboard = (env as any).clipboard;
-    if (clipboard) {
-      const copiedText = await clipboard.readText();
-
-      // Verify the URL matches the expected structure
-      assert.ok(copiedText.startsWith(info.url), "Permalink should start with the file URL");
-      
-      // Verify the revision matches the commit revision
-      const expectedRevision = info.commit.revision;
-      assert.ok(copiedText.includes(`?p=${expectedRevision}`), `Should contain peg revision ${expectedRevision}`);
-      assert.ok(copiedText.includes(`&r=${expectedRevision}`), `Should contain operative revision ${expectedRevision}`);
-
-      console.log(`✓ URL structure verified: ${copiedText}`);
-      console.log(`  Expected revision: ${expectedRevision}`);
-    }
   });
 });

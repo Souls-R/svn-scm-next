@@ -193,6 +193,11 @@
                 "icon": "$(check)"
             },
             {
+                "command": "svn.copyPermalink",
+                "title": "Copy URL at Current Revision",
+                "category": "SVN"
+            },
+            {
                 "command": "svn.deleteUnversioned",
                 "title": "Delete selected files",
                 "category": "SVN"
@@ -476,6 +481,10 @@
                 {
                     "command": "svn.commitWithMessage",
                     "when": "false"
+                },
+                {
+                    "command": "svn.copyPermalink",
+                    "when": "config.svn.enabled && svnOpenRepositoryCount != 0"
                 },
                 {
                     "command": "svn.deleteUnversioned",

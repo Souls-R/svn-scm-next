@@ -38,9 +38,11 @@ export class CopyPermalink extends Command {
     try {
       // Get SVN info for the file
       const info = await repository.getInfo(filePath);
-      
+
       if (!info || !info.url || !info.commit || !info.commit.revision) {
-        window.showErrorMessage("Could not retrieve SVN information for this file");
+        window.showErrorMessage(
+          "Could not retrieve SVN information for this file"
+        );
         return;
       }
 
@@ -51,12 +53,16 @@ export class CopyPermalink extends Command {
       // Copy to clipboard
       const clipboard = (env as any).clipboard;
       if (clipboard === undefined) {
-        window.showErrorMessage("Clipboard is supported in VS Code 1.30 and newer");
+        window.showErrorMessage(
+          "Clipboard is supported in VS Code 1.30 and newer"
+        );
         return;
       }
 
       await clipboard.writeText(permalink);
-      window.showInformationMessage(`Permalink copied to clipboard (revision ${revision})`);
+      window.showInformationMessage(
+        `Permalink copied to clipboard (revision ${revision})`
+      );
     } catch (error) {
       window.showErrorMessage(`Failed to copy permalink: ${error}`);
     }

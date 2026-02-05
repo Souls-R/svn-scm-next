@@ -22,13 +22,11 @@ export class CopyPermalink extends Command {
 
     const filePath = fileUri.fsPath;
 
-    // Get the source control manager
     const sourceControlManager = (await commands.executeCommand(
       "svn.getSourceControlManager",
       ""
     )) as SourceControlManager;
 
-    // Get the repository for this file
     const repository = await sourceControlManager.getRepositoryFromUri(fileUri);
     if (!repository) {
       window.showErrorMessage("File is not in an SVN repository");
@@ -36,7 +34,6 @@ export class CopyPermalink extends Command {
     }
 
     try {
-      // Get SVN info for the file
       const info = await repository.getInfo(filePath);
 
       if (!info || !info.url || !info.commit || !info.commit.revision) {
@@ -46,11 +43,9 @@ export class CopyPermalink extends Command {
         return;
       }
 
-      // Construct the permalink using the last committed revision
       const revision = info.commit.revision;
       const permalink = `${info.url}?p=${revision}&r=${revision}`;
 
-      // Copy to clipboard
       const clipboard = (env as any).clipboard;
       if (clipboard === undefined) {
         window.showErrorMessage(

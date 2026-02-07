@@ -334,4 +334,19 @@ suite("Commands Tests", () => {
     
     assert.equal(await repository.getCurrentBranch(), "trunk");
   });
+
+  test("Lock File", async function () {
+    // Use an existing committed file (new.txt was committed earlier)
+    const file = path.join(checkoutDir.fsPath, "new.txt");
+    const uri = Uri.file(file);
+
+    // Open the file in editor
+    await commands.executeCommand("vscode.open", uri);
+
+    // Lock the file
+    await commands.executeCommand("svn.lock");
+
+    // Note: We can't easily verify the lock was successful in the test
+    // without checking the actual SVN status, but we can verify the command executes
+  });
 });

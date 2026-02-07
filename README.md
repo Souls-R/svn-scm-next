@@ -45,6 +45,7 @@ You can checkout a SVN repository with the `SVN: Checkout` command in the **Comm
 * Add files
 * Revert edits
 * Remove files
+* Get a [file lock](https://svnbook.red-bean.com/en/1.7/svn.ref.svn.c.lock.html)
 * Create branches
 * Switch branches
 * Create patches

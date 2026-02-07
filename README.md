@@ -52,6 +52,7 @@ You can checkout a SVN repository with the `SVN: Checkout` command in the **Comm
 * Diff changes
 * Commit changes/changelists
 * See commit messages
+* [Get file URL at current revision](https://subversion.apache.org/docs/release-notes/1.6.html#historical-uris)
 
 ## Blame
 

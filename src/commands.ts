@@ -8,6 +8,7 @@ import { Cleanup } from "./commands/cleanup";
 import { Close } from "./commands/close";
 import { Commit } from "./commands/commit";
 import { CommitWithMessage } from "./commands/commitWithMessage";
+import { CopyPermalink } from "./commands/copyPermalink";
 import { DeleteUnversioned } from "./commands/deleteUnversioned";
 import { FileOpen } from "./commands/fileOpen";
 import { FinishCheckout } from "./commands/finishCheckout";
@@ -61,6 +62,7 @@ export function registerCommands(
   disposables.push(new ChangeList());
   disposables.push(new Refresh());
   disposables.push(new Commit());
+  disposables.push(new CopyPermalink());
   disposables.push(new OpenResourceBase());
   disposables.push(new OpenResourceHead());
   disposables.push(new OpenChangeBase());

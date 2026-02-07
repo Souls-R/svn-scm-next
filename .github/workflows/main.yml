@@ -45,8 +45,8 @@ jobs:
       - name: Install SVN (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install tortoisesvn --params "/NoTortoiseOverlays"
-          echo "C:\Program Files\TortoiseSVN\bin" >> $GITHUB_PATH
+          choco install sliksvn
+          echo "C:\Program Files\SlikSvn\bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: npm ci
@@ -71,7 +71,7 @@ jobs:
           run: npm test
         env:
           CODE_VERSION: ${{ matrix.version }}
-        continue-on-error: ${{ matrix.version == 'insiders' || runner.os == 'Windows' }}
+        continue-on-error: ${{ matrix.version == 'insiders' }}
 
       - name: Release
         if: startsWith(matrix.os, 'ubuntu') && matrix.version == 'stable' && github.ref == 'refs/heads/master'
@@ -110,8 +110,8 @@ jobs:
       - name: Install SVN (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install tortoisesvn --params "/NoTortoiseOverlays"
-          echo "C:\Program Files\TortoiseSVN\bin" >> $GITHUB_PATH
+          choco install sliksvn
+          echo "C:\Program Files\SlikSvn\bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: npm ci
@@ -144,8 +144,8 @@ jobs:
       - name: Install SVN (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install tortoisesvn --params "/NoTortoiseOverlays"
-          echo "C:\Program Files\TortoiseSVN\bin" >> $GITHUB_PATH
+          choco install sliksvn
+          echo "C:\Program Files\SlikSvn\bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: npm ci
@@ -203,8 +203,8 @@ jobs:
       - name: Install SVN (Windows)
         if: runner.os == 'Windows'
         run: |
-          choco install tortoisesvn --params "/NoTortoiseOverlays"
-          echo "C:\Program Files\TortoiseSVN\bin" >> $GITHUB_PATH
+          choco install sliksvn
+          echo "C:\Program Files\SlikSvn\bin" >> $GITHUB_PATH
 
       - name: Install Dependencies
         run: npm ci

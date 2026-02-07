@@ -2,7 +2,7 @@
     "name": "svn-scm-community",
     "displayName": "SVN (Community Edition)",
     "description": "Integrated Subversion source control - Community maintained fork",
-    "version": "3.0.4",
+    "version": "3.1.0",
     "publisher": "svn-community",
     "engines": {
         "node": ">=22.18.0",

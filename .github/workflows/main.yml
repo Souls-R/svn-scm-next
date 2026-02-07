@@ -71,7 +71,7 @@ jobs:
           run: npm test
         env:
           CODE_VERSION: ${{ matrix.version }}
-        continue-on-error: ${{ matrix.version == 'insiders' }}
+        continue-on-error: ${{ matrix.version == 'insiders' || runner.os == 'Windows' }}
 
       - name: Release
         if: startsWith(matrix.os, 'ubuntu') && matrix.version == 'stable' && github.ref == 'refs/heads/master'

@@ -74,7 +74,8 @@ suite("Copy Permalink Tests", () => {
     if (clipboard) {
       const copiedText = await clipboard.readText();
       if (copiedText) {
-        const expectedPattern = /^file:\/\/\/tmp\/svn_server_-[^/]+\/trunk\/test_permalink\.txt\?p=2&r=2$/;
+        // Path varies by OS: /tmp/ on Linux, /var/folders/ on macOS
+        const expectedPattern = /^file:\/\/\/.+\/svn_server_-[^/]+\/trunk\/test_permalink\.txt\?p=2&r=2$/;
         assert.ok(expectedPattern.test(copiedText), `Permalink should match expected format: ${copiedText}`);
         console.log(`✓ Permalink copied successfully: ${copiedText}`);
       } else {

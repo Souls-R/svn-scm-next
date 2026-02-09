@@ -350,14 +350,13 @@ suite("Commands Tests", () => {
     // without checking the actual SVN status, but we can verify the command executes
   });
 
-  test("Lock Binary File", async function () {
+  test("Lock Binary File from Active Tab", async function () {
     this.timeout(20000);
 
-    // Create a binary file
-    const binaryFile = path.join(checkoutDir.fsPath, "test_lock.png");
+    const binaryFile = path.join(checkoutDir.fsPath, "test_lock.lib");
     const binaryData = Buffer.from([
-      0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-      0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52
+      0x7f, 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01, 0x00,
+      0xff, 0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60
     ]);
     fs.writeFileSync(binaryFile, binaryData);
 
@@ -368,7 +367,6 @@ suite("Commands Tests", () => {
     await commands.executeCommand("svn.refresh");
     await timeout(500);
 
-    // Add the binary file
     const resource = repository.unversioned.resourceStates.find(
       (r) => r.resourceUri.fsPath === binaryFile
     );
@@ -377,25 +375,19 @@ suite("Commands Tests", () => {
       await timeout(500);
     }
 
-    // Commit the binary file
-    repository.inputBox.value = "Add binary file for lock test";
+    repository.inputBox.value = "Add binary file for active tab lock test";
     await commands.executeCommand("svn.commitWithMessage");
     await timeout(2000);
 
-    // Open the binary file (will show "not displayed" message)
     const uri = Uri.file(binaryFile);
     await commands.executeCommand("vscode.open", uri);
     await timeout(1000);
 
-    // Lock the binary file by passing URI directly
-    // This tests both the URI parameter and binary file support
     try {
-      await commands.executeCommand("svn.lock", uri);
+      await commands.executeCommand("svn.lock");
       await timeout(500);
     } catch (error) {
       console.error("Lock command failed:", error);
     }
-
-    // Command should execute without errors
   });
 });

@@ -382,12 +382,12 @@ suite("Commands Tests", () => {
     const originalShowErrorMessage = window.showErrorMessage;
     const originalShowInformationMessage = window.showInformationMessage;
 
-    window.showErrorMessage = async (message, ...items) => {
+    window.showErrorMessage = async (message: string, ...items: any[]) => {
       errorMessages.push(String(message));
       return originalShowErrorMessage(message, ...items);
     };
 
-    window.showInformationMessage = async (message, ...items) => {
+    window.showInformationMessage = async (message: string, ...items: any[]) => {
       infoMessages.push(String(message));
       return originalShowInformationMessage(message, ...items);
     };

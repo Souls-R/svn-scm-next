@@ -1,4 +1,4 @@
-import { window } from "vscode";
+import { Uri, window } from "vscode";
 import { Command } from "./command";
 
 export class Lock extends Command {
@@ -6,15 +6,27 @@ export class Lock extends Command {
     super("svn.lock");
   }
 
-  public async execute() {
-    const editor = window.activeTextEditor;
+  public async execute(resourceUri?: Uri) {
+    let uri: Uri | undefined = resourceUri;
 
-    if (!editor) {
+    if (!uri) {
+      uri = window.activeTextEditor?.document.uri;
+    }
+
+    if (!uri) {
+      const activeTab = window.tabGroups.activeTabGroup?.activeTab;
+      if (activeTab?.input) {
+        const input = activeTab.input as any;
+        if (input.uri) {
+          uri = input.uri;
+        }
+      }
+    }
+
+    if (!uri) {
       window.showErrorMessage("No file is currently open");
       return;
     }
-
-    const uri = editor.document.uri;
 
     if (uri.scheme !== "file") {
       window.showErrorMessage("Can only lock files from the file system");

@@ -44,7 +44,7 @@
         "semantic-release": "semantic-release",
         "style-check": "prettier --check \"src/**/*.ts\"",
         "style-fix": "prettier --write \"src/**/*.ts\"",
-        "test": "npm run test-compile && node ./out/test/runTest.js",
+        "test": "node ./out/test/runTest.js",
         "test-compile": "tsc -p ./",
         "tools:genReadme": "node ./out/tools/generateConfigSectionForReadme.js",
         "vscode:prepublish": "npm run lint && npm run build",

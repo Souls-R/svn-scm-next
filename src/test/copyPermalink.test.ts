@@ -65,12 +65,17 @@ suite("Copy Permalink Tests", () => {
     const document = await workspace.openTextDocument(testFilePath);
     await window.showTextDocument(document);
 
+    // clear clipboard
+    const clipboard = (env as any).clipboard;
+    if (clipboard) {
+      await clipboard.writeText("");
+    }
+
     await commands.executeCommand("svn.copyPermalink");
 
     await timeout(500);
 
     // Clipboard may not work in CI environment, skip assertion if empty
-    const clipboard = (env as any).clipboard;
     if (clipboard) {
       const copiedText = await clipboard.readText();
       if (copiedText) {
@@ -105,11 +110,16 @@ suite("Copy Permalink Tests", () => {
     fs.appendFileSync(testFilePath, "\nmodified content");
     await timeout(500);
 
+    // clear clipboard
+    const clipboard = (env as any).clipboard;
+    if (clipboard) {
+      await clipboard.writeText("");
+    }
+
     await commands.executeCommand("svn.copyPermalink");
     await timeout(500);
 
     // Clipboard may not work in CI environment, skip assertion if empty
-    const clipboard = (env as any).clipboard;
     if (clipboard) {
       const copiedText = await clipboard.readText();
       if (copiedText) {

@@ -46,7 +46,7 @@ export class Lock extends Command {
         window.showInformationMessage(`Successfully locked ${path}`);
       } catch (error) {
         console.log(error);
-        window.showErrorMessage("Unable to lock file");
+        window.showErrorMessage(`Unable to lock file: ${error}`);
       }
     });
   }

@@ -352,13 +352,10 @@ suite("Commands Tests", () => {
     await commands.executeCommand("svn.refresh");
     await timeout(500);
 
-    const resource = repository.unversioned.resourceStates.find(
-      (r) => r.resourceUri.fsPath === binaryFile
-    );
-    if (resource) {
-      await commands.executeCommand("svn.add", resource);
-      await timeout(500);
-    }
+    // Ensure file is added
+    await repository.addFiles([binaryFile]);
+    await repository.status();
+    await timeout(500);
 
     const svnPath = repository.repository.removeAbsolutePath(binaryFile);
     await repository.repository.exec([
@@ -369,13 +366,13 @@ suite("Commands Tests", () => {
     ]);
     await timeout(500);
 
-    repository.inputBox.value = "Add binary file for active tab lock test";
-    await commands.executeCommand("svn.commitWithMessage");
+    // Commit explicitly to ensure file is in repository
+    await repository.commitFiles("Add binary file for active tab lock test", [binaryFile]);
     await timeout(2000);
 
     const uri = Uri.file(binaryFile);
     await commands.executeCommand("vscode.open", uri);
-    await timeout(1000);
+    await timeout(2000);
 
     const errorMessages: string[] = [];
     const infoMessages: string[] = [];

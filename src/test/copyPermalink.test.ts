@@ -65,7 +65,6 @@ suite("Copy Permalink Tests", () => {
     const document = await workspace.openTextDocument(testFilePath);
     await window.showTextDocument(document);
 
-    // clear clipboard
     const clipboard = (env as any).clipboard;
     if (clipboard) {
       await clipboard.writeText("");
@@ -110,7 +109,6 @@ suite("Copy Permalink Tests", () => {
     fs.appendFileSync(testFilePath, "\nmodified content");
     await timeout(200);
 
-    // clear clipboard
     const clipboard = (env as any).clipboard;
     if (clipboard) {
       await clipboard.writeText("");

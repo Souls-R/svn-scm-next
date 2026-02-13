@@ -66,9 +66,7 @@ jobs:
             vscode-${{ runner.os }}-
       
       - name: Run tests
-        uses: coactions/setup-xvfb@v1
-        with:
-          run: npm test
+        run: npm test -- --headless
         env:
           CODE_VERSION: ${{ matrix.version }}
         continue-on-error: ${{ matrix.version == 'insiders' }}

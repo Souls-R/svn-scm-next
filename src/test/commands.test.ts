@@ -1,7 +1,7 @@
 import * as assert from "assert";
 import * as fs from "original-fs";
 import * as path from "path";
-import { commands, Uri } from "vscode";
+import { commands, Uri, window } from "vscode";
 import { ISvnResourceGroup } from "../common/types";
 import { SourceControlManager } from "../source_control_manager";
 import { Repository } from "../repository";
@@ -218,7 +218,7 @@ suite("Commands Tests", () => {
 
         setTimeout(() => {
           commands.executeCommand("svn.forceCommitMessageTest", "Second Commit");
-        }, 1000);
+        }, 100);
         await commands.executeCommand("svn.commit", resource);
 
         await commands.executeCommand("svn.refresh");
@@ -293,7 +293,7 @@ suite("Commands Tests", () => {
     await commands.executeCommand("svn.switchBranch");
 
     // Wait run updateRemoteChangedFiles
-    await timeout(2000);
+    await timeout(500);
 
     // Ensure repository is still available
     if (sourceControlManager.repositories.length === 0) {
@@ -317,7 +317,7 @@ suite("Commands Tests", () => {
     await commands.executeCommand("svn.switchBranch");
 
     // Wait run updateRemoteChangedFiles
-    await timeout(2000);
+    await timeout(500);
 
     // Ensure repository is still available
     if (sourceControlManager.repositories.length === 0) {
@@ -335,18 +335,70 @@ suite("Commands Tests", () => {
     assert.equal(await repository.getCurrentBranch(), "trunk");
   });
 
-  test("Lock File", async function () {
-    // Use an existing committed file (new.txt was committed earlier)
-    const file = path.join(checkoutDir.fsPath, "new.txt");
-    const uri = Uri.file(file);
+  test("Lock Binary File from Active Tab", async function () {
+    this.timeout(20000);
 
-    // Open the file in editor
+    const binaryFile = path.join(checkoutDir.fsPath, "test_lock.lib");
+    const binaryData = Buffer.from([
+      0x7f, 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01, 0x00,
+      0xff, 0x00, 0x10, 0x20, 0x30, 0x40, 0x50, 0x60
+    ]);
+    fs.writeFileSync(binaryFile, binaryData);
+
+    const repository = sourceControlManager.getRepository(
+      checkoutDir
+    ) as Repository;
+
+    await commands.executeCommand("svn.refresh");
+    await timeout(200);
+
+    await repository.addFiles([binaryFile]);
+    await repository.status();
+    await timeout(200);
+
+    const svnPath = repository.repository.removeAbsolutePath(binaryFile);
+    await repository.repository.exec([
+      "propset",
+      "svn:needs-lock",
+      "1",
+      svnPath
+    ]);
+    await timeout(200);
+
+    await repository.commitFiles("Add binary file for active tab lock test", [binaryFile]);
+    await timeout(500);
+
+    const uri = Uri.file(binaryFile);
     await commands.executeCommand("vscode.open", uri);
+    await timeout(500);
 
-    // Lock the file
-    await commands.executeCommand("svn.lock");
+    const errorMessages: string[] = [];
+    const infoMessages: string[] = [];
+    const originalShowErrorMessage = window.showErrorMessage;
+    const originalShowInformationMessage = window.showInformationMessage;
 
-    // Note: We can't easily verify the lock was successful in the test
-    // without checking the actual SVN status, but we can verify the command executes
+    window.showErrorMessage = async (message: string, ...items: any[]) => {
+      errorMessages.push(String(message));
+      return originalShowErrorMessage(message, ...items);
+    };
+
+    window.showInformationMessage = async (message: string, ...items: any[]) => {
+      infoMessages.push(String(message));
+      return originalShowInformationMessage(message, ...items);
+    };
+
+    try {
+      await commands.executeCommand("svn.lock");
+      await timeout(200);
+    } finally {
+      window.showErrorMessage = originalShowErrorMessage;
+      window.showInformationMessage = originalShowInformationMessage;
+    }
+
+    assert.equal(errorMessages.length, 0, errorMessages.join("; "));
+    assert.ok(
+      infoMessages.some(message => message.includes("Successfully locked")),
+      infoMessages.join("; ")
+    );
   });
 });

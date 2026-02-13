@@ -155,8 +155,13 @@ export async function destroyPath(fullPath: string) {
       fs.rmdirSync(fullPath);
       break;
     } catch (error) {
-      await timeout(3000);
-      console.error(error);
+      // On Linux/macOS this should rarely be needed
+      if (i < 2) {
+        await timeout(100);
+      }
+      if (i === 2) {
+        console.error(error);
+      }
     }
   }
   return true;

@@ -352,7 +352,6 @@ suite("Commands Tests", () => {
     await commands.executeCommand("svn.refresh");
     await timeout(500);
 
-    // Ensure file is added
     await repository.addFiles([binaryFile]);
     await repository.status();
     await timeout(500);
@@ -366,7 +365,6 @@ suite("Commands Tests", () => {
     ]);
     await timeout(500);
 
-    // Commit explicitly to ensure file is in repository
     await repository.commitFiles("Add binary file for active tab lock test", [binaryFile]);
     await timeout(2000);
 

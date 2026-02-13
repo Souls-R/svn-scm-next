@@ -49,7 +49,7 @@ suite("Copy Permalink Tests", () => {
 
     repository.inputBox.value = "Add test file for permalink";
     await commands.executeCommand("svn.commitWithMessage");
-    await timeout(1000);
+    await timeout(200);
   });
 
   suiteTeardown(() => {
@@ -73,7 +73,7 @@ suite("Copy Permalink Tests", () => {
 
     await commands.executeCommand("svn.copyPermalink");
 
-    await timeout(500);
+    await timeout(200);
 
     // Clipboard may not work in CI environment, skip assertion if empty
     if (clipboard) {
@@ -93,10 +93,10 @@ suite("Copy Permalink Tests", () => {
     this.timeout(10000);
 
     await commands.executeCommand("workbench.action.closeAllEditors");
-    await timeout(500);
+    await timeout(200);
 
     await commands.executeCommand("svn.copyPermalink");
-    await timeout(500);
+    await timeout(200);
   });
 
   test("Copy Permalink - Modified File", async function() {
@@ -108,7 +108,7 @@ suite("Copy Permalink Tests", () => {
     await window.showTextDocument(document);
 
     fs.appendFileSync(testFilePath, "\nmodified content");
-    await timeout(500);
+    await timeout(200);
 
     // clear clipboard
     const clipboard = (env as any).clipboard;
@@ -117,7 +117,7 @@ suite("Copy Permalink Tests", () => {
     }
 
     await commands.executeCommand("svn.copyPermalink");
-    await timeout(500);
+    await timeout(200);
 
     // Clipboard may not work in CI environment, skip assertion if empty
     if (clipboard) {

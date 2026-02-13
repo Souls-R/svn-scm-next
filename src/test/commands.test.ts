@@ -218,7 +218,7 @@ suite("Commands Tests", () => {
 
         setTimeout(() => {
           commands.executeCommand("svn.forceCommitMessageTest", "Second Commit");
-        }, 1000);
+        }, 100);
         await commands.executeCommand("svn.commit", resource);
 
         await commands.executeCommand("svn.refresh");
@@ -293,7 +293,7 @@ suite("Commands Tests", () => {
     await commands.executeCommand("svn.switchBranch");
 
     // Wait run updateRemoteChangedFiles
-    await timeout(2000);
+    await timeout(500);
 
     // Ensure repository is still available
     if (sourceControlManager.repositories.length === 0) {
@@ -317,7 +317,7 @@ suite("Commands Tests", () => {
     await commands.executeCommand("svn.switchBranch");
 
     // Wait run updateRemoteChangedFiles
-    await timeout(2000);
+    await timeout(500);
 
     // Ensure repository is still available
     if (sourceControlManager.repositories.length === 0) {
@@ -350,11 +350,11 @@ suite("Commands Tests", () => {
     ) as Repository;
 
     await commands.executeCommand("svn.refresh");
-    await timeout(500);
+    await timeout(200);
 
     await repository.addFiles([binaryFile]);
     await repository.status();
-    await timeout(500);
+    await timeout(200);
 
     const svnPath = repository.repository.removeAbsolutePath(binaryFile);
     await repository.repository.exec([
@@ -363,14 +363,14 @@ suite("Commands Tests", () => {
       "1",
       svnPath
     ]);
-    await timeout(500);
+    await timeout(200);
 
     await repository.commitFiles("Add binary file for active tab lock test", [binaryFile]);
-    await timeout(2000);
+    await timeout(500);
 
     const uri = Uri.file(binaryFile);
     await commands.executeCommand("vscode.open", uri);
-    await timeout(2000);
+    await timeout(500);
 
     const errorMessages: string[] = [];
     const infoMessages: string[] = [];
@@ -389,7 +389,7 @@ suite("Commands Tests", () => {
 
     try {
       await commands.executeCommand("svn.lock");
-      await timeout(500);
+      await timeout(200);
     } finally {
       window.showErrorMessage = originalShowErrorMessage;
       window.showInformationMessage = originalShowInformationMessage;

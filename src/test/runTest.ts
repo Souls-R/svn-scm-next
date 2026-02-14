@@ -5,11 +5,15 @@ async function main() {
   const extensionDevelopmentPath = path.resolve(__dirname, "../../");
   const extensionTestsPath = path.resolve(__dirname, "../../out/test");
 
+  const isHeadless = process.argv.includes("--headless");
+  const launchArgs = isHeadless ? ["--headless"] : [];
+
   try {
     await runTests({
       version: process.env.CODE_VERSION,
       extensionDevelopmentPath,
-      extensionTestsPath
+      extensionTestsPath,
+      launchArgs
     });
   } catch (err) {
     const error = err as Error;
